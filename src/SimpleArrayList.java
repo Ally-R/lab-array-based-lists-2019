@@ -81,6 +81,11 @@ public class SimpleArrayList<T> implements SimpleList<T> {
        * The position in the list of the next value to be returned.
        */
       int pos = 0;
+      
+      /**
+       * Track whether set/ remove can be called
+       */
+      int setRem = 0;
 
       // +---------+-------------------------------------------------------
       // | Helpers |
@@ -156,8 +161,14 @@ public class SimpleArrayList<T> implements SimpleList<T> {
       } // remove()
 
       public void set(T val) {
-        // STUB
-        throw new UnsupportedOperationException();
+        // When setRem == 0, next() or previous() have not been called
+        // When setRem == -1, next() was last called
+        // When setRem == 1, previous() was last called
+        if (this.setRem == 0 || (this.pos == 0 && this.setRem == -1)) {
+          throw new IllegalStateException();
+        } // if
+        values[this.pos + this.setRem] = val; // Find index to set
+        this.setRem = 0;
       } // set(T)
     };
   } // listIterator()
